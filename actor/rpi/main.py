@@ -1,6 +1,11 @@
-#!/usr/bin/env python
 import paho.mqtt.client as mqtt
 import RPi.GPIO as GPIO
+import time, sys
+
+broker = {
+    "ip": "10.16.1.11",
+    "port": 1883,
+}
 
 pins = {
     "huette/1": 15,
@@ -25,9 +30,10 @@ def setup_GPIO():
     GPIO.setmode(GPIO.BCM)
     for pin in pins:
         GPIO.setup(pins[pin], GPIO.OUT)
+        GPIO.output(pins[pin], GPIO.HIGH)     
 
 def on_connect(client, userdata, flags, rc):
-    client.subscribe("#")
+    client.subscribe("huette/#")
 
 def on_message(client, userdata, msg):
     try:
@@ -39,12 +45,22 @@ def on_message(client, userdata, msg):
     except:
         pass
 
-setup_GPIO()
+while True:
+    try:
+        setup_GPIO()
 
-client = mqtt.Client()
-client.on_connect = on_connect
-client.on_message = on_message
+        client = mqtt.Client()
+        client.on_connect = on_connect
+        client.on_message = on_message
 
-client.connect("10.16.1.11", 1883, 60)
+        client.connect(broker["ip"], broker["port"], 60)
 
-client.loop_forever()
+        print('hut actor started')
+        client.loop_forever()
+    except KeyboardInterrupt:
+        sys.exit(0)
+    except:
+        print('retry in 10 seconds')
+        time.sleep(10)
+    finally:
+        GPIO.cleanup()
