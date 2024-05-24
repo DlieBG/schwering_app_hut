@@ -1,6 +1,6 @@
-#!/usr/bin/env python
 import paho.mqtt.client as mqtt
 import RPi.GPIO as GPIO
+import os
 
 pins = {
     "huette/1": 15,
@@ -25,9 +25,10 @@ def setup_GPIO():
     GPIO.setmode(GPIO.BCM)
     for pin in pins:
         GPIO.setup(pins[pin], GPIO.OUT)
+        GPIO.output(pins[pin], GPIO.HIGH)     
 
 def on_connect(client, userdata, flags, rc):
-    client.subscribe("#")
+    client.subscribe("huette/#")
 
 def on_message(client, userdata, msg):
     try:
@@ -45,6 +46,6 @@ client = mqtt.Client()
 client.on_connect = on_connect
 client.on_message = on_message
 
-client.connect("10.16.1.11", 1883, 60)
+client.connect(os.getenv('MQTT_BROKER_IP'), os.getenv('MQTT_BROKER_PORT', 1883), 60)
 
 client.loop_forever()

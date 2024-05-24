@@ -1,0 +1,7 @@
+services:
+  actor-rpi:
+    build: .
+    restart: unless-stopped
+    env_file: .evn
+    devices:
+      - /dev/gpiomem
