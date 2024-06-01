@@ -12,6 +12,20 @@ services:
       - emqx-data:/opt/emqx/data
       - emqx-log:/opt/emqx/log
 
+  frontend:
+    image: ghcr.io/dliebg/schwering_app_hut/frontend:latest
+    restart: unless-stopped
+    ports:
+      - 10007:80
+
+  backend:
+    image: ghcr.io/dliebg/schwering_app_hut/backend:latest
+    restart: unless-stopped
+    environment:
+      - BROKER_IP=emqx
+      - BROKER_PORT=1883
+    env_file: .env
+
 volumes:
   emqx-data:
   emqx-log:
