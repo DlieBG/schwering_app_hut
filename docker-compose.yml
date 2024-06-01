@@ -13,13 +13,13 @@ services:
       - emqx-log:/opt/emqx/log
 
   frontend:
-    image: ghcr.io/dliebg/schwering_app_hut/frontend:latest
+    build: frontend
     restart: unless-stopped
     ports:
       - 10007:80
 
   backend:
-    image: ghcr.io/dliebg/schwering_app_hut/backend:latest
+    build: backend
     restart: unless-stopped
     environment:
       - BROKER_IP=emqx
