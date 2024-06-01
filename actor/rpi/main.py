@@ -3,8 +3,7 @@ import RPi.GPIO as GPIO
 import json, time, sys
 
 broker = {
-    # "ip": "10.16.1.11",
-    "ip": "10.16.3.110",
+    "ip": "10.16.1.11",
     "port": 1883,
 }
 
@@ -61,7 +60,7 @@ while True:
     try:
         setup_GPIO()
 
-        client = mqtt.Client("rpi")
+        client = mqtt.Client("huette-rpi")
         client.on_connect = on_connect
         client.on_message = on_message
 
