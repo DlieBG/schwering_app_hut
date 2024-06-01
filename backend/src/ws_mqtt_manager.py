@@ -1,7 +1,6 @@
 from fastapi import WebSocket
 
-class ConnectionManager():
-
+class WsMqttManager():
     def __init__(self, mqtt_client):
         self.active_connections: list[WebSocket] = []
         self.mqtt_client = mqtt_client

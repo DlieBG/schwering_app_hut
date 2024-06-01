@@ -1,7 +1,7 @@
 from fastapi import Body, FastAPI, Request, WebSocket, WebSocketDisconnect
 from dotenv import load_dotenv, find_dotenv
 from fastapi.responses import JSONResponse
-from manager import ConnectionManager
+from ws_mqtt_manager import WsMqttManager
 import paho.mqtt.client as mqtt
 import requests, asyncio, os
 from command import Command
@@ -15,7 +15,7 @@ def on_connect(client, userdata, flags, rc):
 
 def on_message(client, userdata, message):
     loop.create_task(
-        manager.broadcast(message)
+        ws_mqtt_manager.broadcast(message)
     )
 
 @app.middleware('http')
@@ -34,7 +34,7 @@ async def check_authorization(request: Request, call_next):
     
     return JSONResponse(status_code=401, content='Unauthorized')
 
-@app.post('/command')
+@app.post('/api/command')
 async def send_command(command: Command = Body()):
     client.publish(
         topic=command.topic,
@@ -43,13 +43,13 @@ async def send_command(command: Command = Body()):
     
 @app.websocket('/live')
 async def mqtt_live(websocket: WebSocket):
-    await manager.connect(websocket)
+    await ws_mqtt_manager.connect(websocket)
     try:
         while True:
             data = await websocket.receive_text()
             print(data)
     except WebSocketDisconnect:
-        manager.disconnect(websocket)
+        ws_mqtt_manager.disconnect(websocket)
 
 client = mqtt.Client()
 client.on_connect = on_connect
@@ -61,6 +61,6 @@ client.connect(
 )
 client.loop_start()
 
-manager = ConnectionManager(client)
+ws_mqtt_manager = WsMqttManager(client)
 
 loop = asyncio.get_event_loop()
