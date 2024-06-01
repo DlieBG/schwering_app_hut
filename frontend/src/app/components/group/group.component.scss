@@ -1,0 +1,29 @@
+.card {
+    border: 1px solid grey;
+    border-radius: 8px;
+    padding: 1em;
+    margin: 1em;
+}
+
+@media screen and (orientation:landscape) {
+    .card {
+        min-width: 420px;
+    }
+}
+
+.title {
+    display: flex;
+    justify-content: space-between;
+}
+
+h4 {
+    font-size: 1.25em;
+    margin-top: -.125em;
+    margin-bottom: .75em;
+}
+
+.group-button {
+    button {
+        margin-left: 1em;
+    }
+}

@@ -1,0 +1,14 @@
+<div class="body">
+    <div class="title">
+        <button mat-stroked-button color="warn" (click)="allOff()">
+            <mat-icon>power_settings_new</mat-icon>
+            Alles aus
+        </button>
+    </div>
+
+    <div class="groups">
+        @for (group of groups; track $index) {
+        <app-group [config]="group"></app-group>
+        }
+    </div>
+</div>

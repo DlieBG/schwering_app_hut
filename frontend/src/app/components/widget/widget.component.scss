@@ -1,0 +1,42 @@
+.body {
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+}
+
+.heading {
+    margin-bottom: .5em;
+    font-weight: 400;
+    color: #b7f799fa;
+    font-size: 16px;
+    height: 28px;
+}
+
+.overview {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+}
+
+.left {
+    width: 225px;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: space-evenly;
+}
+
+.right {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.row {
+    width: 100%;
+    display: flex;
+    justify-content: space-evenly;
+}

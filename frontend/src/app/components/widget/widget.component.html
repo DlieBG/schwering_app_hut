@@ -1,0 +1,24 @@
+<div class="body">
+    <div class="heading">Übersicht</div>
+
+    <div class="overview">
+        <div class="left">
+            <button mat-stroked-button color="warn" (click)="allOff()">
+                <mat-icon>power_settings_new</mat-icon>
+                Alles aus
+            </button>
+            
+            <!-- <app-status-heating></app-status-heating> -->
+        </div>
+
+        <div class="right">
+            @for (row of rows; track $index) {
+            <div class="row">
+                @for (switch of row; track $index) {
+                <app-status [config]="switch"></app-status>
+                }
+            </div>
+            }
+        </div>
+    </div>
+</div>

@@ -1,0 +1,19 @@
+<div class="card">
+    <div class="title">
+        <h4>{{ config.name }}</h4>
+
+        <div class="group-button">
+            <button mat-mini-fab color="primary" (click)="allOn()">
+                <mat-icon>wb_incandescent</mat-icon>
+            </button>
+
+            <button mat-mini-fab color="accent" (click)="allOff()">
+                <mat-icon>power_settings_new</mat-icon>
+            </button>
+        </div>
+    </div>
+
+    @for (switch of config.switchs; track $index) {
+    <app-switch [config]="switch"></app-switch>
+    }
+</div>
