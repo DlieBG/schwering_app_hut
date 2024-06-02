@@ -2,6 +2,7 @@ from fastapi import Body, FastAPI, Request, WebSocket, WebSocketDisconnect
 from dotenv import load_dotenv, find_dotenv
 from fastapi.responses import JSONResponse
 from ws_mqtt_manager import WsMqttManager
+from actor_manager import ActorManager
 import paho.mqtt.client as mqtt
 import requests, asyncio, os
 from command import Command
@@ -12,10 +13,14 @@ app = FastAPI()
 
 def on_connect(client, userdata, flags, rc):
     client.subscribe('huette/+/status/#')
+    client.subscribe('huette/+/events/rpc')
 
 def on_message(client, userdata, message):
     loop.create_task(
         ws_mqtt_manager.broadcast(message)
+    )
+    loop.create_task(
+        actor_manager.event(message)
     )
 
 @app.middleware('http')
@@ -62,5 +67,6 @@ client.connect(
 client.loop_start()
 
 ws_mqtt_manager = WsMqttManager(client)
+actor_manager = ActorManager(client)
 
 loop = asyncio.get_event_loop()

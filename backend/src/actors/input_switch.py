@@ -1,0 +1,2 @@
+class InputSwitch():
+    pass
