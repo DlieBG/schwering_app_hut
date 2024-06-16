@@ -62,7 +62,7 @@ class ActorManager():
 
         self.heating = HeatingController(
             mqtt_client=mqtt_client,
-            mqtt_prefix='huette/heizung/steuerung',
+            mqtt_topic='huette/heizung/steuerung',
             temperature_sensor=self.temperature,
             switch=self.switchs['heizung']['heizung'],
         )

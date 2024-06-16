@@ -7,6 +7,7 @@ import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner'; 
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
+import { MatProgressBarModule } from '@angular/material/progress-bar';
 
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
@@ -21,6 +22,8 @@ import { StatusComponent } from './components/status/status.component';
 import { StatusHeatingComponent } from './components/status-heating/status-heating.component';
 import { InputComponent } from './components/input/input.component';
 import { TemperatureComponent } from './components/temperature/temperature.component';
+import { HeatingComponent } from './components/heating/heating.component';
+import { HumidityComponent } from './components/humidity/humidity.component';
 
 @NgModule({
   declarations: [
@@ -32,7 +35,9 @@ import { TemperatureComponent } from './components/temperature/temperature.compo
     StatusComponent,
     StatusHeatingComponent,
     InputComponent,
-    TemperatureComponent
+    TemperatureComponent,
+    HeatingComponent,
+    HumidityComponent
   ],
   imports: [
     BrowserModule,
@@ -43,6 +48,7 @@ import { TemperatureComponent } from './components/temperature/temperature.compo
     MatProgressSpinnerModule,
     MatButtonModule,
     MatIconModule,
+    MatProgressBarModule,
   ],
   providers: [
     { provide: HTTP_INTERCEPTORS, useClass: AuthenticationInterceptor, multi: true },

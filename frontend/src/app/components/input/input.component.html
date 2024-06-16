@@ -1,9 +1,19 @@
 <div class="input">
     @if(state$ | async; as state) {
     @if (state.payload.state) {
+    @if (heating) {
+    <mat-icon class="active-heating">whatshot</mat-icon>
+    }
+    @else {
     <mat-icon class="active">wb_incandescent</mat-icon>
+    }
     } @else {
+    @if (heating) {
+    <mat-icon class="inactive-heating">power_settings_new</mat-icon>
+    }
+    @else {
     <mat-icon class="inactive">power_settings_new</mat-icon>
+    }
     }
     } @else {
     <mat-spinner diameter="32" color="warn"></mat-spinner>

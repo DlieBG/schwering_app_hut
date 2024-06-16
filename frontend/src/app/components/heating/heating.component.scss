@@ -1,0 +1,77 @@
+.card {
+    border: 1px solid grey;
+    border-radius: 8px;
+    padding: 1em;
+    margin: 1em;
+}
+
+@media screen and (orientation:landscape) {
+    .card {
+        min-width: 420px;
+    }
+}
+
+.title {
+    display: flex;
+    justify-content: space-between;
+}
+
+h4 {
+    font-size: 1.25em;
+    margin-top: -.125em;
+    margin-bottom: .75em;
+}
+
+.status {
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    font-size: 1.75em;
+    height: 32px;
+    margin-bottom: .25em;
+}
+
+.state {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1em;
+
+    .switch {
+        margin: 1em;
+        display: flex;
+        align-items: center;
+
+        mat-spinner {
+            margin-left: 10px;
+        }
+
+        .name {
+            font-size: .875rem;
+            margin-left: 14px;
+            color: #e0e3e2;
+        }
+    }
+
+    .input {
+        width: 100%;
+        display: flex;
+        justify-content: center;
+    }
+}
+
+.target {
+    display: flex;
+    align-items: center;
+    justify-content: space-evenly;
+    margin-bottom: 1em;
+    height: 40px;
+
+    .value {
+        font-size: 1.75em;
+
+        &.inactive {
+            color: grey;
+        }
+    }
+}

@@ -1,3 +1,20 @@
-pre {
-    font-size: .75em;
+.temperature {
+    font-size: 1.5em;
+    height: 32px;
+}
+
+.state {
+    display: flex;
+    justify-content: space-around;
+    margin-top: .25em;
+    height: 32px;
+
+    mat-icon {
+        height: 31px;
+        color: lightgreen;
+
+        &.inactive {
+            color: grey;
+        }
+    }
 }

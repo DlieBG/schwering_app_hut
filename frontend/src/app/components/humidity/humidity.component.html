@@ -1,6 +1,6 @@
 <div class="temperature">
-    @if (temperature$ | async; as temperature) {
-    {{ temperature.payload.tC | number: '1.1' }} °C
+    @if (humidity$ | async; as humidity) {
+    {{ humidity.payload.rh | number: '1.1' }}%
     }
     @else {
     <mat-spinner diameter="32" color="warn"></mat-spinner>

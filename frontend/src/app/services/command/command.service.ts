@@ -11,8 +11,12 @@ export class CommandService {
         private httpClient: HttpClient,
     ) { }
 
-    sendCommand(command: Command) {
-        return this.httpClient.post('api/command', command);
+    sendCommand(command: Command, retain: boolean = false) {
+        return this.httpClient.post('api/command', command, {
+            params: {
+                retain: retain,
+            },
+        });
     }
 
 }
