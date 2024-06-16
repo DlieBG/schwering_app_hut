@@ -13,6 +13,7 @@ app = FastAPI()
 
 def on_connect(client, userdata, flags, rc):
     client.subscribe('huette/+/status/#')
+    client.subscribe('huette/+/command/#')
     client.subscribe('huette/+/events/rpc')
     client.subscribe('huette/+/steuerung')
 

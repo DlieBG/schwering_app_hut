@@ -37,7 +37,7 @@ export class InputComponent implements AfterViewInit {
     ) { }
 
     ngAfterViewInit(): void {
-        // this.sendStatusUpdate();
+        this.sendStatusUpdate();
     }
 
     sendStatusUpdate() {
