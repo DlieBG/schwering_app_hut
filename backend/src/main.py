@@ -14,6 +14,7 @@ app = FastAPI()
 def on_connect(client, userdata, flags, rc):
     client.subscribe('huette/+/status/#')
     client.subscribe('huette/+/events/rpc')
+    client.subscribe('huette/+/steuerung')
 
 def on_message(client, userdata, message):
     loop.create_task(
