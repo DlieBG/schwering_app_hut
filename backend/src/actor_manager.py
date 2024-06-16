@@ -23,7 +23,7 @@ class ActorManager():
         }
 
         self.input_switchs: dict[InputSwitch] = {
-
+            'heizung_feedback': InputSwitch(self, 'huette/heizung', 'input:100'),
         }
 
         self.switchs: dict[dict[Switch]] = {
@@ -57,7 +57,9 @@ class ActorManager():
     async def event(self, message):
         for key in self.input_buttons:
             await self.input_buttons[key].event(message)
-
+        
+        for key in self.input_switchs:
+            await self.input_switchs[key].event(message)
 
     def __handler_top_left(self, input_button: InputButton) -> InputButton:
         @input_button.single_push
