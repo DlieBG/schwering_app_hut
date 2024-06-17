@@ -1,3 +1,6 @@
+from actors.temperature_sensor import TemperatureSensor
+from actors.humidity_sensor import HumiditySensor
+from heating_controller import HeatingController
 from actors.input_button import InputButton
 from actors.input_switch import InputSwitch
 from actors.switch import Switch
@@ -23,8 +26,11 @@ class ActorManager():
         }
 
         self.input_switchs: dict[InputSwitch] = {
-
+            'heizung_feedback': InputSwitch(self, 'huette/heizung', 'input:100'),
         }
+
+        self.temperature = TemperatureSensor(self, 'huette/heizung', 'temperature:100')
+        self.humidity = HumiditySensor(self, 'huette/heizung', 'humidity:100')
 
         self.switchs: dict[dict[Switch]] = {
             'deckenlampen': {
@@ -49,15 +55,28 @@ class ActorManager():
             'seitenlampen_außen': {
                 'sprudelstein': Switch(mqtt_client, 'huette/rpi', 'switch:10'),
             },
-            # 'heizung': {
-            #     'heizung': Switch(mqtt_client, 'huette/heizung', 'switch:0')
-            # }
+            'heizung': {
+                'heizung': Switch(mqtt_client, 'huette/heizung', 'switch:0'),
+            },
         }
+
+        self.heating = HeatingController(
+            mqtt_client=mqtt_client,
+            mqtt_topic='huette/heizung/steuerung',
+            temperature_sensor=self.temperature,
+            switch=self.switchs['heizung']['heizung'],
+        )
 
     async def event(self, message):
         for key in self.input_buttons:
             await self.input_buttons[key].event(message)
-
+        
+        for key in self.input_switchs:
+            await self.input_switchs[key].event(message)
+            
+        await self.temperature.event(message)
+        await self.humidity.event(message)
+        await self.heating.event(message)
 
     def __handler_top_left(self, input_button: InputButton) -> InputButton:
         @input_button.single_push

@@ -1,16 +1,16 @@
 import { AfterViewInit, Component, Input } from '@angular/core';
-import { MqttService } from '../../services/mqtt/mqtt.service';
-import { HeatingPayload, InputPayload, Message } from '../../types/message.type';
-import { filter, map } from 'rxjs';
 import { HeatingConfig } from '../../types/heating.type';
+import { MqttService } from '../../services/mqtt/mqtt.service';
 import { CommandService } from '../../services/command/command.service';
+import { filter, map } from 'rxjs';
+import { HeatingPayload, Message } from '../../types/message.type';
 
 @Component({
-    selector: 'app-status-heating',
-    templateUrl: './status-heating.component.html',
-    styleUrl: './status-heating.component.scss'
+    selector: 'app-heating',
+    templateUrl: './heating.component.html',
+    styleUrl: './heating.component.scss'
 })
-export class StatusHeatingComponent implements AfterViewInit {
+export class HeatingComponent implements AfterViewInit {
     
     @Input() config!: HeatingConfig;
     
@@ -46,6 +46,30 @@ export class StatusHeatingComponent implements AfterViewInit {
                 topic: `${this.config.mqttTopic}/command`,
                 payload: 'status_update',
             })
+            .subscribe();
+    }
+
+    sendState(message: Message<HeatingPayload>, state: boolean) {
+        this.commandService
+            .sendCommand({
+                topic: this.config.mqttTopic,
+                payload: JSON.stringify({
+                    ...message.payload,
+                    state: state,
+                } as HeatingPayload),
+            }, true)
+            .subscribe();
+    }
+    
+    sendTemperature(message: Message<HeatingPayload>, increment: number) {
+        this.commandService
+            .sendCommand({
+                topic: this.config.mqttTopic,
+                payload: JSON.stringify({
+                    ...message.payload,
+                    target_temperature: message.payload.target_temperature += increment,
+                } as HeatingPayload),
+            }, true)
             .subscribe();
     }
 

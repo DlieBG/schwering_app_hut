@@ -1,24 +1,24 @@
 import { AfterViewInit, Component, Input } from '@angular/core';
-import { MqttService } from '../../services/mqtt/mqtt.service';
-import { HeatingPayload, InputPayload, Message } from '../../types/message.type';
+import { HumidityConfig } from '../../types/humidity.type';
 import { filter, map } from 'rxjs';
-import { HeatingConfig } from '../../types/heating.type';
+import { HumidityPayload, Message } from '../../types/message.type';
+import { MqttService } from '../../services/mqtt/mqtt.service';
 import { CommandService } from '../../services/command/command.service';
 
 @Component({
-    selector: 'app-status-heating',
-    templateUrl: './status-heating.component.html',
-    styleUrl: './status-heating.component.scss'
+    selector: 'app-humidity',
+    templateUrl: './humidity.component.html',
+    styleUrl: './humidity.component.scss'
 })
-export class StatusHeatingComponent implements AfterViewInit {
+export class HumidityComponent implements AfterViewInit {
+
+    @Input() config!: HumidityConfig;
     
-    @Input() config!: HeatingConfig;
-    
-    state$ = this.mqttService.live
+    humidity$ = this.mqttService.live
         .pipe(
             filter(
                 (message) => {
-                    return message.topic == this.config.mqttTopic;
+                    return message.topic == `${this.config.mqttPrefix}/status/${this.config.mqttSuffix}`;
                 }
             ),
             map(
@@ -26,16 +26,16 @@ export class StatusHeatingComponent implements AfterViewInit {
                     return {
                         topic: message.topic,
                         payload: JSON.parse(message.payload),
-                    } as Message<HeatingPayload>;
+                    } as Message<HumidityPayload>;
                 }
             ),
         );
-    
+
     constructor(
         private mqttService: MqttService,
         private commandService: CommandService,
     ) { }
-    
+
     ngAfterViewInit(): void {
         this.sendStatusUpdate();
     }
@@ -43,7 +43,7 @@ export class StatusHeatingComponent implements AfterViewInit {
     sendStatusUpdate() {
         this.commandService
             .sendCommand({
-                topic: `${this.config.mqttTopic}/command`,
+                topic: `${this.config.mqttPrefix}/command/${this.config.mqttSuffix}`,
                 payload: 'status_update',
             })
             .subscribe();

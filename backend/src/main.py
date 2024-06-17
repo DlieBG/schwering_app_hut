@@ -13,7 +13,10 @@ app = FastAPI()
 
 def on_connect(client, userdata, flags, rc):
     client.subscribe('huette/+/status/#')
+    client.subscribe('huette/+/command/#')
     client.subscribe('huette/+/events/rpc')
+    client.subscribe('huette/+/steuerung')
+    client.subscribe('huette/+/steuerung/command')
 
 def on_message(client, userdata, message):
     loop.create_task(
@@ -40,10 +43,11 @@ async def check_authorization(request: Request, call_next):
     return JSONResponse(status_code=401, content='Unauthorized')
 
 @app.post('/api/command')
-async def send_command(command: Command = Body()):
+async def send_command(command: Command = Body(), retain: bool = False):
     client.publish(
         topic=command.topic,
         payload=command.payload,
+        retain=retain,
     )
     
 @app.websocket('/live')

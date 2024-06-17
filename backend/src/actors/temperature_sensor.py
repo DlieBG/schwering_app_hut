@@ -1,26 +1,26 @@
 import json
 
-class InputSwitch():
+class TemperatureSensor():
     def __init__(self, parent, mqtt_prefix: str, mqtt_suffix: str):
         self.parent = parent
         self.mqtt_prefix = mqtt_prefix
         self.mqtt_suffix = mqtt_suffix
-    
-        self.__toggles = []
-        self.state = None
+
+        self.__updates = []
+        self.temperature = None
     
     async def event(self, message):
         if message.topic == f'{self.mqtt_prefix}/status/{self.mqtt_suffix}':
-            self.state = json.loads(message.payload).get('state', False)
-            self.__invoke(self.__toggles)
-        
+            self.temperature = json.loads(message.payload).get('tC')
+            self.__invoke(self.__updates)
+
         if message.topic == f'{self.mqtt_prefix}/command/{self.mqtt_suffix}':
             if message.payload.decode('utf-8') == 'status_update':
                 self.__status_update()
-
+    
     def __invoke(self, funcs):
         for func in funcs:
-            func(self.parent, self.state)
+            func(self.parent, self.temperature)
     
     def __send_status(self, status: dict):
         self.parent.mqtt_client.publish(
@@ -29,10 +29,10 @@ class InputSwitch():
         )
 
     def __status_update(self):
-        if self.state is not None:
+        if self.temperature is not None:
             self.__send_status({
-                'state': self.state,
+                'tC': self.temperature,
             })
-
-    def toggle(self, func):
-        self.__toggles.append(func)
+    
+    def update(self, func):
+        self.__updates.append(func)

@@ -13,6 +13,7 @@ import { CommandService } from '../../services/command/command.service';
 export class InputComponent implements AfterViewInit {
     
     @Input() config!: InputConfig;
+    @Input() heating: boolean = false;
 
     state$ = this.mqttService.live
         .pipe(
@@ -37,7 +38,7 @@ export class InputComponent implements AfterViewInit {
     ) { }
 
     ngAfterViewInit(): void {
-        // this.sendStatusUpdate();
+        this.sendStatusUpdate();
     }
 
     sendStatusUpdate() {

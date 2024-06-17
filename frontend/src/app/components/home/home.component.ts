@@ -1,6 +1,8 @@
 import { Component } from '@angular/core';
 import { GroupConfig } from '../../types/group.type';
 import { CommandService } from '../../services/command/command.service';
+import { HeatingConfig } from '../../types/heating.type';
+import { HeatingPayload } from '../../types/message.type';
 
 @Component({
     selector: 'app-home',
@@ -49,6 +51,27 @@ export class HomeComponent {
         },
     ];
 
+    heating: HeatingConfig = {
+        mqttTopic: 'huette/heizung/steuerung',
+        temperatureConfig: {
+            mqttPrefix: 'huette/heizung',
+            mqttSuffix: 'temperature:100',
+        },
+        humidityConfig: {
+            mqttPrefix: 'huette/heizung',
+            mqttSuffix: 'humidity:100',
+        },
+        switchConfig: {
+            mqttPrefix: 'huette/heizung',
+            mqttSuffix: 'switch:1',
+            name: 'Steuerung',
+        },
+        inputConfig: {
+            mqttPrefix: 'huette/heizung',
+            mqttSuffix: 'input:100',
+        },
+    };
+
     constructor(
         private commandService: CommandService,
     ) { }
@@ -64,6 +87,16 @@ export class HomeComponent {
                     .subscribe();
             }
         }
+        
+        this.commandService
+            .sendCommand({
+                topic: this.heating.mqttTopic,
+                payload: JSON.stringify({
+                    state: false,
+                    target_temperature: 18,
+                } as HeatingPayload),
+            }, true)
+            .subscribe();
     }
 
 }

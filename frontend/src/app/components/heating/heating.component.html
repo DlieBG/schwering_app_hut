@@ -1,0 +1,50 @@
+<div class="card">
+    <div class="title">
+        <h4>Heizung</h4>
+    </div>
+
+    <div class="content">
+        <div class="status">
+            <app-temperature [config]="config.temperatureConfig"></app-temperature>
+            <app-humidity [config]="config.humidityConfig"></app-humidity>
+        </div>
+
+        <div class="state">
+            <div class="switch">
+                @if(state$ | async; as state) {
+                <mat-slide-toggle [checked]="state.payload.state" (change)="sendState(state, $event.checked)">
+                    {{ config.switchConfig.name }}
+                </mat-slide-toggle>
+                } @else {
+                <mat-spinner diameter="32" color="warn"></mat-spinner>
+                <div class="name">
+                    {{ config.switchConfig.name }}
+                </div>
+                }
+            </div>
+
+            <div class="input">
+                <app-input [config]="config.inputConfig" [heating]="true"></app-input>
+            </div>
+        </div>
+
+        <div class="target">
+            @if(state$ | async; as state) {
+            <button mat-mini-fab (click)="sendTemperature(state, -1)">
+                <mat-icon>remove</mat-icon>
+            </button>
+
+            <div class="value" [class.inactive]="!state.payload.state">
+                {{ state.payload.target_temperature | number: '1.0' }} °C
+            </div>
+
+            <button mat-mini-fab color="primary" (click)="sendTemperature(state, 1)">
+                <mat-icon>add</mat-icon>
+            </button>
+            }
+            @else {
+                <mat-progress-bar mode="query" color="accent"></mat-progress-bar>
+            }
+        </div>
+    </div>
+</div>
