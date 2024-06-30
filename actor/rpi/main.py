@@ -3,7 +3,7 @@ import RPi.GPIO as GPIO
 import json, time, sys
 
 broker = {
-    "ip": "10.16.1.11",
+    "ip": "10.16.3.22",
     "port": 1883,
 }
 
