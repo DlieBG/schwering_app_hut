@@ -1,80 +1,127 @@
-import { Component } from '@angular/core';
-import { GroupConfig } from '../../types/group.type';
-import { CommandService } from '../../services/command/command.service';
-import { HeatingConfig } from '../../types/heating.type';
-import { HeatingPayload } from '../../types/message.type';
+import { Component } from "@angular/core";
+import { GroupConfig } from "../../types/group.type";
+import { CommandService } from "../../services/command/command.service";
+import { HeatingConfig } from "../../types/heating.type";
+import { HeatingPayload } from "../../types/message.type";
 
 @Component({
-    selector: 'app-home',
-    templateUrl: './home.component.html',
-    styleUrl: './home.component.scss'
+    selector: "app-home",
+    templateUrl: "./home.component.html",
+    styleUrl: "./home.component.scss",
 })
 export class HomeComponent {
-
     groups: GroupConfig[] = [
         {
             switchs: [
-                { mqttPrefix: 'huette/rpi', mqttSuffix: 'switch:1', name: 'links' },
-                { mqttPrefix: 'huette/rpi', mqttSuffix: 'switch:2', name: 'rechts' },
+                {
+                    mqttPrefix: "huette/rpi",
+                    mqttSuffix: "switch:1",
+                    name: "links",
+                },
+                {
+                    mqttPrefix: "huette/rpi",
+                    mqttSuffix: "switch:2",
+                    name: "rechts",
+                },
             ],
-            name: 'Deckenlampen',
+            name: "Deckenlampen",
         },
         {
             switchs: [
-                { mqttPrefix: 'huette/rpi', mqttSuffix: 'switch:3', name: 'vorne links' },
-                { mqttPrefix: 'huette/rpi', mqttSuffix: 'switch:4', name: 'hinten links' },
-                { mqttPrefix: 'huette/rpi', mqttSuffix: 'switch:5', name: 'hinten rechts' },
-                { mqttPrefix: 'huette/rpi', mqttSuffix: 'switch:6', name: 'vorne rechts' },
+                {
+                    mqttPrefix: "huette/rpi",
+                    mqttSuffix: "switch:3",
+                    name: "vorne links",
+                },
+                {
+                    mqttPrefix: "huette/rpi",
+                    mqttSuffix: "switch:4",
+                    name: "hinten links",
+                },
+                {
+                    mqttPrefix: "huette/rpi",
+                    mqttSuffix: "switch:5",
+                    name: "hinten rechts",
+                },
+                {
+                    mqttPrefix: "huette/rpi",
+                    mqttSuffix: "switch:6",
+                    name: "vorne rechts",
+                },
             ],
-            name: 'Seitenlampen',
+            name: "Seitenlampen",
         },
         {
             switchs: [
-                { mqttPrefix: 'huette/rpi', mqttSuffix: 'switch:7', name: 'links' },
-                { mqttPrefix: 'huette/rpi', mqttSuffix: 'switch:8', name: 'mitte' },
-                { mqttPrefix: 'huette/rpi', mqttSuffix: 'switch:9', name: 'rechts' },
+                {
+                    mqttPrefix: "huette/rpi",
+                    mqttSuffix: "switch:7",
+                    name: "links",
+                },
+                {
+                    mqttPrefix: "huette/rpi",
+                    mqttSuffix: "switch:8",
+                    name: "mitte",
+                },
+                {
+                    mqttPrefix: "huette/rpi",
+                    mqttSuffix: "switch:9",
+                    name: "rechts",
+                },
             ],
-            name: 'Außenlampen',
+            name: "Außenlampen",
         },
         {
             switchs: [
-                { mqttPrefix: 'huette/rpi', mqttSuffix: 'switch:12', name: 'Stern links' },
-                { mqttPrefix: 'huette/rpi', mqttSuffix: 'switch:14', name: 'Stern rechts' },
+                {
+                    mqttPrefix: "huette/rpi",
+                    mqttSuffix: "switch:12",
+                    name: "Stern links",
+                    timecontrol: "huette/timecontrol/stern_links",
+                },
+                {
+                    mqttPrefix: "huette/rpi",
+                    mqttSuffix: "switch:14",
+                    name: "Stern rechts",
+                    timecontrol: "huette/timecontrol/stern_rechts",
+                },
             ],
-            name: 'Weihnachtsbeleuchtung',
+            name: "Weihnachtsbeleuchtung",
         },
         {
             switchs: [
-                { mqttPrefix: 'huette/rpi', mqttSuffix: 'switch:10', name: 'Sprudelstein' },
+                {
+                    mqttPrefix: "huette/rpi",
+                    mqttSuffix: "switch:10",
+                    name: "Sprudelstein",
+                },
             ],
-            name: 'Seitenlampen außen',
+            name: "Seitenlampen außen",
         },
     ];
 
     heating: HeatingConfig = {
-        mqttTopic: 'huette/heizung/steuerung',
+        mqttTopic: "huette/heizung/steuerung",
         temperatureConfig: {
-            mqttPrefix: 'huette/heizung',
-            mqttSuffix: 'temperature:100',
+            mqttPrefix: "huette/heizung",
+            mqttSuffix: "temperature:100",
         },
         humidityConfig: {
-            mqttPrefix: 'huette/heizung',
-            mqttSuffix: 'humidity:100',
+            mqttPrefix: "huette/heizung",
+            mqttSuffix: "humidity:100",
         },
         switchConfig: {
-            mqttPrefix: 'huette/heizung',
-            mqttSuffix: 'switch:1',
-            name: 'Steuerung',
+            mqttPrefix: "huette/heizung",
+            mqttSuffix: "switch:1",
+            name: "Steuerung",
         },
         inputConfig: {
-            mqttPrefix: 'huette/heizung',
-            mqttSuffix: 'input:100',
+            mqttPrefix: "huette/heizung",
+            mqttSuffix: "input:100",
         },
     };
 
-    constructor(
-        private commandService: CommandService,
-    ) { }
+    constructor(private commandService: CommandService) {}
 
     allOff() {
         for (let group of this.groups) {
@@ -82,21 +129,23 @@ export class HomeComponent {
                 this.commandService
                     .sendCommand({
                         topic: `${switchConfig.mqttPrefix}/command/${switchConfig.mqttSuffix}`,
-                        payload: 'off',
+                        payload: "off",
                     })
                     .subscribe();
             }
         }
-        
+
         this.commandService
-            .sendCommand({
-                topic: this.heating.mqttTopic,
-                payload: JSON.stringify({
-                    state: false,
-                    target_temperature: 18,
-                } as HeatingPayload),
-            }, true)
+            .sendCommand(
+                {
+                    topic: this.heating.mqttTopic,
+                    payload: JSON.stringify({
+                        state: false,
+                        target_temperature: 18,
+                    } as HeatingPayload),
+                },
+                true,
+            )
             .subscribe();
     }
-
 }

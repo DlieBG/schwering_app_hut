@@ -1,5 +1,27 @@
 .switch {
     margin-bottom: 1em;
+}
+
+.timecontrol {
+    margin: 0.5em 1em 2em 1em;
+    min-height: 56px;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 1em;
+}
+
+mat-checkbox {
+    margin-right: 1em;
+}
+
+mat-form-field {
+    width: 100px;
+    margin-right: 0.5em;
+    margin-bottom: -20px;
+}
+
+.loading {
     display: flex;
     align-items: center;
 }
@@ -9,7 +31,7 @@ mat-spinner {
 }
 
 .name {
-    font-size: .875rem;
+    font-size: 0.875rem;
     margin-left: 14px;
     color: #e0e3e2;
 }

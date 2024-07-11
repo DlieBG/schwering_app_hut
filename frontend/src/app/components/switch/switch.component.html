@@ -1,12 +1,73 @@
 <div class="switch">
-    @if(state$ | async; as state) {
-    <mat-slide-toggle [checked]="state.payload.output" (change)="sendState($event.checked)">
-        {{ config.name }}
-    </mat-slide-toggle>
+    @if (state$ | async; as state) {
+        <mat-slide-toggle
+            [checked]="state.payload.output"
+            (change)="sendState($event.checked)"
+            [disabled]="switchDisabled"
+        >
+            {{ config.name }}
+        </mat-slide-toggle>
+
+        @if (timecontrolState$ | async; as timecontrolState) {
+            <div class="timecontrol">
+                <mat-checkbox
+                    [checked]="timecontrolState.payload.state"
+                    (change)="
+                        sendTimecontrolState(timecontrolState, $event.checked)
+                    "
+                >
+                    Zeitsteuerung
+                </mat-checkbox>
+
+                <div>
+                    <mat-form-field appearance="outline" color="accent">
+                        <mat-label>Start</mat-label>
+                        <input
+                            matInput
+                            type="time"
+                            [disabled]="!timecontrolState.payload.state"
+                            [(ngModel)]="timecontrolState.payload.start_time"
+                            (change)="sendTimecontrolTimes(timecontrolState)"
+                        />
+                    </mat-form-field>
+
+                    <mat-form-field appearance="outline" color="accent">
+                        <mat-label>Ende</mat-label>
+                        <input
+                            matInput
+                            type="time"
+                            [disabled]="!timecontrolState.payload.state"
+                            [(ngModel)]="timecontrolState.payload.end_time"
+                            (change)="sendTimecontrolTimes(timecontrolState)"
+                        />
+                    </mat-form-field>
+                </div>
+            </div>
+        } @else {
+            @if (config.timecontrol) {
+                <div class="timecontrol">
+                    <mat-progress-bar
+                        mode="query"
+                        color="accent"
+                    ></mat-progress-bar>
+                </div>
+            }
+        }
     } @else {
-    <mat-spinner diameter="32" color="warn"></mat-spinner>
-    <div class="name">
-        {{ config.name }}
-    </div>
+        <div class="loading">
+            <mat-spinner diameter="32" color="warn"></mat-spinner>
+            <div class="name">
+                {{ config.name }}
+            </div>
+        </div>
+
+        @if (config.timecontrol) {
+            <div class="timecontrol">
+                <mat-progress-bar
+                    mode="query"
+                    color="accent"
+                ></mat-progress-bar>
+            </div>
+        }
     }
 </div>

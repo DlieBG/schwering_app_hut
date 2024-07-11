@@ -7,6 +7,12 @@ export interface SwitchPayload {
     output: boolean;
 }
 
+export interface TimecontrolPayload {
+    state: boolean;
+    start_time: string;
+    end_time: string;
+}
+
 export interface InputPayload {
     state: boolean;
 }
