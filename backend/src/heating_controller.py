@@ -12,8 +12,8 @@ class HeatingController():
         self.temperature_sensor = temperature_sensor
         self.switch = switch
 
-        self.state = None
-        self.target_temperature = None
+        self.state = False
+        self.target_temperature = 18
 
         @temperature_sensor.update
         def temperature_update(_, temperature):
@@ -22,21 +22,21 @@ class HeatingController():
     async def event(self, message):
         if message.topic == self.mqtt_topic:
             payload = json.loads(message.payload)
-            self.state = payload.get('state', False)
-            self.target_temperature = payload.get('target_temperature', 18)
+            self.state = payload.get('state', self.state)
+            self.target_temperature = payload.get('target_temperature', self.target_temperature)
 
             self.update_switch()
 
         if message.topic == f'{self.mqtt_topic}/command':
             if message.payload.decode('utf-8') == 'status_update':
                 self.__status_update()
-    
+
     def __send_status(self, status: dict):
         self.mqtt_client.publish(
             topic=self.mqtt_topic,
             payload=json.dumps(status),
         )
-    
+
     def __status_update(self):
         if self.state is not None:
             self.__send_status({
