@@ -1,3 +1,4 @@
+from timecontrol_controller import TimecontrolController
 from actors.temperature_sensor import TemperatureSensor
 from actors.humidity_sensor import HumiditySensor
 from heating_controller import HeatingController
@@ -9,7 +10,7 @@ import paho.mqtt.client as mqtt
 class ActorManager():
     def __init__(self, mqtt_client: mqtt.Client):
         self.mqtt_client = mqtt_client
-    
+
         self.input_buttons: dict[InputButton] = {
             'top_left': self.__handler_top_left(
                 InputButton(self, 'huette/schalter', 'input:0'),
@@ -67,16 +68,32 @@ class ActorManager():
             switch=self.switchs['heizung']['heizung'],
         )
 
+        self.timecontrols = [
+            TimecontrolController(
+                mqtt_client=mqtt_client,
+                mqtt_topic='huette/timecontrol/stern_links',
+                switch=self.switchs['weihnachtsbeleuchtung']['stern_links'],
+            ),
+            TimecontrolController(
+                mqtt_client=mqtt_client,
+                mqtt_topic='huette/timecontrol/stern_rechts',
+                switch=self.switchs['weihnachtsbeleuchtung']['stern_rechts'],
+            ),
+        ]
+
     async def event(self, message):
         for key in self.input_buttons:
             await self.input_buttons[key].event(message)
-        
+
         for key in self.input_switchs:
             await self.input_switchs[key].event(message)
-            
+
         await self.temperature.event(message)
         await self.humidity.event(message)
         await self.heating.event(message)
+
+        for timecontrol in self.timecontrols:
+            await timecontrol.event(message)
 
     def __handler_top_left(self, input_button: InputButton) -> InputButton:
         @input_button.single_push
@@ -84,23 +101,23 @@ class ActorManager():
             print("top left single push")
             self.switchs['deckenlampen']['links'].toggle()
             self.switchs['deckenlampen']['rechts'].toggle()
-    
+
         @input_button.double_push
         def _(self):
             print("top left double push")
             self.switchs['deckenlampen']['links'].toggle()
-        
+
         @input_button.triple_push
         def _(self):
             print("top left triple push")
             self.switchs['deckenlampen']['rechts'].toggle()
-        
+
         @input_button.long_push
         def _(self):
             print("top left long push")
             self.switchs['deckenlampen']['links'].off()
             self.switchs['deckenlampen']['rechts'].off()
-        
+
         return input_button
 
     def __handler_top_right(self, input_button: InputButton) -> InputButton:
@@ -111,19 +128,19 @@ class ActorManager():
             self.switchs['seitenlampen']['hinten_links'].toggle()
             self.switchs['seitenlampen']['hinten_rechts'].toggle()
             self.switchs['seitenlampen']['vorne_rechts'].toggle()
-    
+
         @input_button.double_push
         def _(self):
             print("top right double push")
             self.switchs['seitenlampen']['vorne_links'].toggle()
             self.switchs['seitenlampen']['vorne_rechts'].toggle()
-        
+
         @input_button.triple_push
         def _(self):
             print("top right triple push")
             self.switchs['seitenlampen']['vorne_links'].toggle()
             self.switchs['seitenlampen']['hinten_rechts'].toggle()
-        
+
         @input_button.long_push
         def _(self):
             print("top right long push")
@@ -131,7 +148,7 @@ class ActorManager():
             self.switchs['seitenlampen']['hinten_links'].off()
             self.switchs['seitenlampen']['hinten_rechts'].off()
             self.switchs['seitenlampen']['vorne_rechts'].off()
-        
+
         return input_button
 
     def __handler_bottom_left(self, input_button: InputButton) -> InputButton:
@@ -141,17 +158,17 @@ class ActorManager():
             self.switchs['außenlampen']['links'].toggle()
             self.switchs['außenlampen']['mitte'].toggle()
             self.switchs['außenlampen']['rechts'].toggle()
-    
+
         @input_button.double_push
         def _(self):
             print("bottom left double push")
             self.switchs['außenlampen']['mitte'].toggle()
-        
+
         @input_button.triple_push
         def _(self):
             print("bottom left triple push")
             self.switchs['seitenlampen_außen']['sprudelstein'].toggle()
-        
+
         @input_button.long_push
         def _(self):
             print("bottom left long push")
@@ -159,7 +176,7 @@ class ActorManager():
             self.switchs['außenlampen']['mitte'].off()
             self.switchs['außenlampen']['rechts'].off()
             self.switchs['seitenlampen_außen']['sprudelstein'].off()
-        
+
         return input_button
 
     def __handler_bottom_right(self, input_button: InputButton) -> InputButton:
@@ -168,22 +185,22 @@ class ActorManager():
             print("bottom right single push")
             self.switchs['weihnachtsbeleuchtung']['stern_links'].toggle()
             self.switchs['weihnachtsbeleuchtung']['stern_rechts'].toggle()
-    
+
         @input_button.double_push
         def _(self):
             print("bottom right double push")
             self.switchs['weihnachtsbeleuchtung']['stern_links'].toggle()
-        
+
         @input_button.triple_push
         def _(self):
             print("bottom right triple push")
             self.switchs['weihnachtsbeleuchtung']['stern_rechts'].toggle()
-        
+
         @input_button.long_push
         def _(self):
             print("bottom right long push")
             for group_key in self.switchs:
                 for switch_key in self.switchs[group_key]:
                     self.switchs[group_key][switch_key].off()
-        
+
         return input_button

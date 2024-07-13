@@ -17,6 +17,8 @@ def on_connect(client, userdata, flags, rc):
     client.subscribe('huette/+/events/rpc')
     client.subscribe('huette/+/steuerung')
     client.subscribe('huette/+/steuerung/command')
+    client.subscribe('huette/timecontrol/+')
+    client.subscribe('huette/timecontrol/+/command')
 
 def on_message(client, userdata, message):
     loop.create_task(
@@ -39,7 +41,7 @@ async def check_authorization(request: Request, call_next):
         request.state.login = response.json()
 
         return await call_next(request)
-    
+
     return JSONResponse(status_code=401, content='Unauthorized')
 
 @app.post('/api/command')
@@ -49,7 +51,7 @@ async def send_command(command: Command = Body(), retain: bool = False):
         payload=command.payload,
         retain=retain,
     )
-    
+
 @app.websocket('/live')
 async def mqtt_live(websocket: WebSocket):
     await ws_mqtt_manager.connect(websocket)
