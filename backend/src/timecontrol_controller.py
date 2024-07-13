@@ -55,7 +55,7 @@ class TimecontrolController():
             start_time = datetime.strptime(self.start_time, '%H:%M').time()
             end_time = datetime.strptime(self.end_time, '%H:%M').time()
 
-            if start_time < end_time:
+            if start_time <= end_time:
                 return start_time <= now <= end_time
             else:
                 # timespan over night
